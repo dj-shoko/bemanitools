@@ -103,7 +103,7 @@ static int32_t _handle_turntable_analog(
     int32_t state = tt_state;
 
     if (config->tt.analog.relative) {
-        state = _convert_relative_analog(clang-format
+        state = _convert_relative_analog(
             tt_cur, tt_last, state, config->tt.analog.relative_sensitivity);
 
         pad_state->bThumbLX =
@@ -217,7 +217,7 @@ static void _handle_buttons_14keys(uint16_t keys, DS4_REPORT *state)
         _check_assign_key(keys, IIDX_IO_KEY_P2_3, DS4_BUTTON_SQUARE);
     state[1].wButtons |=
         _check_assign_key(keys, IIDX_IO_KEY_P2_4, DS4_BUTTON_TRIANGLE);
-    state[1].wButtons |= 
+    state[1].wButtons |=
         _check_assign_key(keys, IIDX_IO_KEY_P2_5, DS4_BUTTON_SHOULDER_LEFT);
     state[1].wButtons |=
         _check_assign_key(keys, IIDX_IO_KEY_P2_6, DS4_BUTTON_SHOULDER_RIGHT);
@@ -232,20 +232,20 @@ static void _handle_buttons_panel(uint8_t panel, DS4_REPORT *state)
     state[1].wButtons |= _check_assign_key(
         panel, IIDX_IO_PANEL_LIGHT_P2_START, DS4_BUTTON_OPTIONS);
 
-    state[1].wButtons |=
-        _check_assign_key(panel, IIDX_IO_PANEL_LIGHT_VEFX, DS4_BUTTON_TRIGGER_LEFT);
-    state[1].wButtons |=
-        _check_assign_key(panel, IIDX_IO_PANEL_LIGHT_EFFECT, DS4_BUTTON_TRIGGER_RIGHT);
+    state[1].wButtons |= _check_assign_key(
+        panel, IIDX_IO_PANEL_LIGHT_VEFX, DS4_BUTTON_TRIGGER_LEFT);
+    state[1].wButtons |= _check_assign_key(
+        panel, IIDX_IO_PANEL_LIGHT_EFFECT, DS4_BUTTON_TRIGGER_RIGHT);
 }
 
 static void _handle_buttons_system(uint8_t system, DS4_REPORT *state)
 {
     state[0].wButtons |=
         _check_assign_key(system, IIDX_IO_SYS_TEST, DS4_BUTTON_TRIGGER_LEFT);
-    state[0].wButtons |=
-        _check_assign_key(system, IIDX_IO_SYS_SERVICE, DS4_BUTTON_TRIGGER_RIGHT);
-    state[0].wButtons |=
-        _check_assign_key(system, IIDX_IO_SYS_COIN, DS4_SPECIAL_BUTTON_TOUCHPAD);
+    state[0].wButtons |= _check_assign_key(
+        system, IIDX_IO_SYS_SERVICE, DS4_BUTTON_TRIGGER_RIGHT);
+    state[0].wButtons |= _check_assign_key(
+        system, IIDX_IO_SYS_COIN, DS4_SPECIAL_BUTTON_TOUCHPAD);
 }
 
 static void _all_lights_off()
