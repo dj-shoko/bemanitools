@@ -20,7 +20,7 @@
 
 #include "vigemstub/helper.h"
 
-#define JOYSTICKS_NUM 3
+#define JOYSTICKS_NUM 2
 #define TURNTABLE_NUM 2
 
 static uint8_t _tt_last_raw[TURNTABLE_NUM];
@@ -98,18 +98,18 @@ static int32_t _handle_turntable_analog(
     uint8_t tt_cur,
     uint8_t tt_last,
     int32_t tt_state,
-    XUSB_REPORT *pad_state)
+    DS4_REPORT *pad_state)
 {
     int32_t state = tt_state;
 
     if (config->tt.analog.relative) {
-        state = _convert_relative_analog(
+        state = _convert_relative_analog(clang-format
             tt_cur, tt_last, state, config->tt.analog.relative_sensitivity);
 
-        pad_state->sThumbLX =
+        pad_state->bThumbLX =
             _filter_floor(state, config->tt.analog.relative_sensitivity / 2);
     } else {
-        pad_state->sThumbLX = _convert_analog_to_s16(tt_cur);
+        pad_state->bThumbLX = _convert_analog_to_s16(tt_cur);
     }
 
     return state;
@@ -120,7 +120,7 @@ static int16_t _handle_turntable_as_button(
     uint8_t tt_cur,
     uint8_t tt_last,
     int16_t tt_state,
-    XUSB_REPORT *pad_state)
+    DS4_REPORT *pad_state)
 {
     const uint8_t btn_inc = config->tt.button.debounce;
     const uint16_t btn_threshhold = btn_inc * config->tt.button.threshold;
@@ -159,16 +159,16 @@ static int16_t _handle_turntable_as_button(
     }
 
     if (state > btn_threshhold) {
-        pad_state->wButtons |= XUSB_GAMEPAD_LEFT_THUMB;
+        pad_state->wButtons |= DS4_BUTTON_THUMB_LEFT;
     } else if (state < (int16_t) btn_threshhold * -1) {
-        pad_state->wButtons |= XUSB_GAMEPAD_RIGHT_THUMB;
+        pad_state->wButtons |= DS4_BUTTON_THUMB_RIGHT;
     }
 
     return state;
 }
 
 static void _handle_turntable(
-    const struct vigem_iidxio_config *config, uint8_t *tt, XUSB_REPORT *state)
+    const struct vigem_iidxio_config *config, uint8_t *tt, DS4_REPORT *state)
 {
     for (uint8_t i = 0; i < TURNTABLE_NUM; i++) {
         if (config->tt.debug_output) {
@@ -192,60 +192,60 @@ static void _handle_turntable(
     }
 }
 
-static void _handle_buttons_14keys(uint16_t keys, XUSB_REPORT *state)
+static void _handle_buttons_14keys(uint16_t keys, DS4_REPORT *state)
 {
     state[0].wButtons |=
-        _check_assign_key(keys, IIDX_IO_KEY_P1_1, XUSB_GAMEPAD_A);
+        _check_assign_key(keys, IIDX_IO_KEY_P1_1, DS4_BUTTON_CROSS);
     state[0].wButtons |=
-        _check_assign_key(keys, IIDX_IO_KEY_P1_2, XUSB_GAMEPAD_B);
+        _check_assign_key(keys, IIDX_IO_KEY_P1_2, DS4_BUTTON_CIRCLE);
     state[0].wButtons |=
-        _check_assign_key(keys, IIDX_IO_KEY_P1_3, XUSB_GAMEPAD_X);
+        _check_assign_key(keys, IIDX_IO_KEY_P1_3, DS4_BUTTON_SQUARE);
     state[0].wButtons |=
-        _check_assign_key(keys, IIDX_IO_KEY_P1_4, XUSB_GAMEPAD_Y);
+        _check_assign_key(keys, IIDX_IO_KEY_P1_4, DS4_BUTTON_TRIANGLE);
     state[0].wButtons |=
-        _check_assign_key(keys, IIDX_IO_KEY_P1_5, XUSB_GAMEPAD_LEFT_SHOULDER);
+        _check_assign_key(keys, IIDX_IO_KEY_P1_5, DS4_BUTTON_SHOULDER_LEFT);
     state[0].wButtons |=
-        _check_assign_key(keys, IIDX_IO_KEY_P1_6, XUSB_GAMEPAD_RIGHT_SHOULDER);
+        _check_assign_key(keys, IIDX_IO_KEY_P1_6, DS4_BUTTON_SHOULDER_RIGHT);
     state[0].wButtons |=
-        _check_assign_key(keys, IIDX_IO_KEY_P1_7, XUSB_GAMEPAD_BACK);
+        _check_assign_key(keys, IIDX_IO_KEY_P1_7, DS4_SPECIAL_BUTTON_TOUCHPAD);
 
     state[1].wButtons |=
-        _check_assign_key(keys, IIDX_IO_KEY_P2_1, XUSB_GAMEPAD_A);
+        _check_assign_key(keys, IIDX_IO_KEY_P2_1, DS4_BUTTON_CROSS);
     state[1].wButtons |=
-        _check_assign_key(keys, IIDX_IO_KEY_P2_2, XUSB_GAMEPAD_B);
+        _check_assign_key(keys, IIDX_IO_KEY_P2_2, DS4_BUTTON_CIRCLE);
     state[1].wButtons |=
-        _check_assign_key(keys, IIDX_IO_KEY_P2_3, XUSB_GAMEPAD_X);
+        _check_assign_key(keys, IIDX_IO_KEY_P2_3, DS4_BUTTON_SQUARE);
     state[1].wButtons |=
-        _check_assign_key(keys, IIDX_IO_KEY_P2_4, XUSB_GAMEPAD_Y);
+        _check_assign_key(keys, IIDX_IO_KEY_P2_4, DS4_BUTTON_TRIANGLE);
+    state[1].wButtons |= 
+        _check_assign_key(keys, IIDX_IO_KEY_P2_5, DS4_BUTTON_SHOULDER_LEFT);
     state[1].wButtons |=
-        _check_assign_key(keys, IIDX_IO_KEY_P2_5, XUSB_GAMEPAD_LEFT_SHOULDER);
+        _check_assign_key(keys, IIDX_IO_KEY_P2_6, DS4_BUTTON_SHOULDER_RIGHT);
     state[1].wButtons |=
-        _check_assign_key(keys, IIDX_IO_KEY_P2_6, XUSB_GAMEPAD_RIGHT_SHOULDER);
-    state[1].wButtons |=
-        _check_assign_key(keys, IIDX_IO_KEY_P2_7, XUSB_GAMEPAD_BACK);
+        _check_assign_key(keys, IIDX_IO_KEY_P2_7, DS4_SPECIAL_BUTTON_TOUCHPAD);
 }
 
-static void _handle_buttons_panel(uint8_t panel, XUSB_REPORT *state)
+static void _handle_buttons_panel(uint8_t panel, DS4_REPORT *state)
 {
     state[0].wButtons |= _check_assign_key(
-        panel, IIDX_IO_PANEL_LIGHT_P1_START, XUSB_GAMEPAD_START);
+        panel, IIDX_IO_PANEL_LIGHT_P1_START, DS4_BUTTON_OPTIONS);
     state[1].wButtons |= _check_assign_key(
-        panel, IIDX_IO_PANEL_LIGHT_P2_START, XUSB_GAMEPAD_START);
+        panel, IIDX_IO_PANEL_LIGHT_P2_START, DS4_BUTTON_OPTIONS);
 
-    state[2].wButtons |=
-        _check_assign_key(panel, IIDX_IO_PANEL_LIGHT_VEFX, XUSB_GAMEPAD_B);
-    state[2].wButtons |=
-        _check_assign_key(panel, IIDX_IO_PANEL_LIGHT_EFFECT, XUSB_GAMEPAD_A);
+    state[1].wButtons |=
+        _check_assign_key(panel, IIDX_IO_PANEL_LIGHT_VEFX, DS4_BUTTON_TRIGGER_LEFT);
+    state[1].wButtons |=
+        _check_assign_key(panel, IIDX_IO_PANEL_LIGHT_EFFECT, DS4_BUTTON_TRIGGER_RIGHT);
 }
 
-static void _handle_buttons_system(uint8_t system, XUSB_REPORT *state)
+static void _handle_buttons_system(uint8_t system, DS4_REPORT *state)
 {
-    state[2].wButtons |=
-        _check_assign_key(system, IIDX_IO_SYS_TEST, XUSB_GAMEPAD_X);
-    state[2].wButtons |=
-        _check_assign_key(system, IIDX_IO_SYS_SERVICE, XUSB_GAMEPAD_Y);
-    state[2].wButtons |=
-        _check_assign_key(system, IIDX_IO_SYS_COIN, XUSB_GAMEPAD_START);
+    state[0].wButtons |=
+        _check_assign_key(system, IIDX_IO_SYS_TEST, DS4_BUTTON_TRIGGER_LEFT);
+    state[0].wButtons |=
+        _check_assign_key(system, IIDX_IO_SYS_SERVICE, DS4_BUTTON_TRIGGER_RIGHT);
+    state[0].wButtons |=
+        _check_assign_key(system, IIDX_IO_SYS_COIN, DS4_SPECIAL_BUTTON_TOUCHPAD);
 }
 
 static void _all_lights_off()
@@ -306,7 +306,7 @@ int main(int argc, char **argv)
 
     bool loop = true;
 
-    XUSB_REPORT state[JOYSTICKS_NUM];
+    DS4_REPORT state[JOYSTICKS_NUM];
 
     log_info("vigem init succeeded, beginning poll loop");
 
@@ -354,7 +354,7 @@ int main(int argc, char **argv)
         // Pad update
 
         for (uint8_t i = 0; i < JOYSTICKS_NUM; i++) {
-            vigem_target_x360_update(client, pad[i], state[i]);
+            vigem_target_ds4_update(client, pad[i], state[i]);
         }
 
         // -----------------------------------------------------------------------------
