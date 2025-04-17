@@ -156,7 +156,7 @@ int main(int argc, char **argv)
 
     bool loop = true;
     uint32_t pad_state = 0;
-    XUSB_REPORT state[NUM_PADS] = {0};
+    DS4_REPORT state[NUM_PADS] = {0};
 
     log_info("vigem init succeeded, beginning poll loop");
 
@@ -168,55 +168,55 @@ int main(int argc, char **argv)
         }
 
         state[0].wButtons |=
-            check_assign_key(pad_state, DDR_TEST, XUSB_GAMEPAD_LEFT_THUMB);
+            check_assign_key(pad_state, DDR_TEST, DS4_BUTTON_THUMB_LEFT);
         state[0].wButtons |=
-            check_assign_key(pad_state, DDR_SERVICE, XUSB_GAMEPAD_RIGHT_THUMB);
+            check_assign_key(pad_state, DDR_SERVICE, DS4_BUTTON_THUMB_RIGHT);
         state[0].wButtons |=
-            check_assign_key(pad_state, DDR_COIN, XUSB_GAMEPAD_BACK);
+            check_assign_key(pad_state, DDR_COIN, DS4_SPECIAL_BUTTON_TOUCHPAD);
 
         // assign arrows to face buttons due to jumps / hat interpretation
         state[0].wButtons |=
-            check_assign_key(pad_state, DDR_P1_UP, XUSB_GAMEPAD_Y);
+            check_assign_key(pad_state, DDR_P1_UP, DS4_BUTTON_TRIANGLE);
         state[0].wButtons |=
-            check_assign_key(pad_state, DDR_P1_DOWN, XUSB_GAMEPAD_A);
+            check_assign_key(pad_state, DDR_P1_DOWN, DS4_BUTTON_CROSS);
         state[0].wButtons |=
-            check_assign_key(pad_state, DDR_P1_LEFT, XUSB_GAMEPAD_X);
+            check_assign_key(pad_state, DDR_P1_LEFT, DS4_BUTTON_SQUARE);
         state[0].wButtons |=
-            check_assign_key(pad_state, DDR_P1_RIGHT, XUSB_GAMEPAD_B);
+            check_assign_key(pad_state, DDR_P1_RIGHT, DS4_BUTTON_CIRCLE);
 
         state[0].wButtons |=
-            check_assign_key(pad_state, DDR_P1_START, XUSB_GAMEPAD_START);
+            check_assign_key(pad_state, DDR_P1_START, DS4_BUTTON_OPTIONS);
         state[0].wButtons |=
-            check_assign_key(pad_state, DDR_P1_MENU_UP, XUSB_GAMEPAD_DPAD_UP);
+            check_assign_key(pad_state, DDR_P1_MENU_UP, DS4_BUTTON_DPAD_NORTH);
         state[0].wButtons |= check_assign_key(
-            pad_state, DDR_P1_MENU_DOWN, XUSB_GAMEPAD_DPAD_DOWN);
+            pad_state, DDR_P1_MENU_DOWN, DS4_BUTTON_DPAD_SOUTH);
         state[0].wButtons |= check_assign_key(
-            pad_state, DDR_P1_MENU_LEFT, XUSB_GAMEPAD_DPAD_LEFT);
+            pad_state, DDR_P1_MENU_LEFT, DS4_BUTTON_DPAD_WEST);
         state[0].wButtons |= check_assign_key(
-            pad_state, DDR_P1_MENU_RIGHT, XUSB_GAMEPAD_DPAD_RIGHT);
+            pad_state, DDR_P1_MENU_RIGHT, DS4_BUTTON_DPAD_EAST);
 
         state[1].wButtons |=
-            check_assign_key(pad_state, DDR_P2_UP, XUSB_GAMEPAD_Y);
+            check_assign_key(pad_state, DDR_P2_UP, DS4_BUTTON_TRIANGLE);
         state[1].wButtons |=
-            check_assign_key(pad_state, DDR_P2_DOWN, XUSB_GAMEPAD_A);
+            check_assign_key(pad_state, DDR_P2_DOWN, DS4_BUTTON_CROSS);
         state[1].wButtons |=
-            check_assign_key(pad_state, DDR_P2_LEFT, XUSB_GAMEPAD_X);
+            check_assign_key(pad_state, DDR_P2_LEFT, DS4_BUTTON_SQUARE);
         state[1].wButtons |=
-            check_assign_key(pad_state, DDR_P2_RIGHT, XUSB_GAMEPAD_B);
+            check_assign_key(pad_state, DDR_P2_RIGHT, DS4_BUTTON_CIRCLE);
 
         state[1].wButtons |=
-            check_assign_key(pad_state, DDR_P2_START, XUSB_GAMEPAD_START);
+            check_assign_key(pad_state, DDR_P2_START, DS4_BUTTON_OPTIONS);
         state[1].wButtons |=
-            check_assign_key(pad_state, DDR_P2_MENU_UP, XUSB_GAMEPAD_DPAD_UP);
+            check_assign_key(pad_state, DDR_P2_MENU_UP, DS4_BUTTON_DPAD_NORTH);
         state[1].wButtons |= check_assign_key(
-            pad_state, DDR_P2_MENU_DOWN, XUSB_GAMEPAD_DPAD_DOWN);
+            pad_state, DDR_P2_MENU_DOWN, DS4_BUTTON_DPAD_SOUTH);
         state[1].wButtons |= check_assign_key(
-            pad_state, DDR_P2_MENU_LEFT, XUSB_GAMEPAD_DPAD_LEFT);
+            pad_state, DDR_P2_MENU_LEFT, DS4_BUTTON_DPAD_WEST);
         state[1].wButtons |= check_assign_key(
-            pad_state, DDR_P2_MENU_RIGHT, XUSB_GAMEPAD_DPAD_RIGHT);
+            pad_state, DDR_P2_MENU_RIGHT, DS4_BUTTON_DPAD_EAST);
 
         for (uint8_t i = 0; i < NUM_PADS; i++) {
-            vigem_target_x360_update(client, pad[i], state[i]);
+            vigem_target_ds4_update(client, pad[i], state[i]);
         }
 
         if (config.enable_reactive_light) {
