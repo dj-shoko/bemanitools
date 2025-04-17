@@ -29,10 +29,10 @@ PVIGEM_CLIENT vigem_helper_setup(void)
 
 PVIGEM_TARGET vigem_helper_add_pad(PVIGEM_CLIENT client)
 {
-    PVIGEM_TARGET pad = vigem_target_x360_alloc();
+    PVIGEM_TARGET pad = vigem_target_ds4_alloc();
 
     if (pad == NULL) {
-        log_warning("vigem_target_x360_alloc failed\n");
+        log_warning("vigem_target_ds4_alloc failed\n");
         return NULL;
     }
 
