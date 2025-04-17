@@ -171,7 +171,7 @@ int main(int argc, char **argv)
 
     int32_t buffered_vol[2] = {0, 0};
 
-    XUSB_REPORT state;
+    DS4_REPORT state;
 
     log_info("vigem init succeeded, beginning poll loop");
 
@@ -193,9 +193,9 @@ int main(int argc, char **argv)
             buffered_vol[1] = convert_relative_analog(
                 vol[1], last_vol[1], buffered_vol[1], ANALOG_FIXED_SENSITIVITY);
 
-            state.sThumbLX =
+            state.bThumbLX =
                 filter_floor(buffered_vol[0], ANALOG_FIXED_SENSITIVITY / 2);
-            state.sThumbLY =
+            state.bThumbLY =
                 filter_floor(buffered_vol[1], ANALOG_FIXED_SENSITIVITY / 2);
 
             last_vol[0] = vol[0];
@@ -206,23 +206,23 @@ int main(int argc, char **argv)
         }
 
         state.wButtons |= check_assign_key(
-            gpio0, SDVX_IO_IN_GPIO_0_START, XUSB_GAMEPAD_START);
+            gpio0, SDVX_IO_IN_GPIO_0_START, DS4_BUTTON_OPTIONS);
         state.wButtons |=
-            check_assign_key(sys, SDVX_IO_IN_GPIO_SYS_TEST, XUSB_GAMEPAD_BACK);
+            check_assign_key(sys, SDVX_IO_IN_GPIO_SYS_TEST, DS4_SPECIAL_BUTTON_TOUCHPAD);
         state.wButtons |=
-            check_assign_key(gpio0, SDVX_IO_IN_GPIO_0_A, XUSB_GAMEPAD_A);
+            check_assign_key(gpio0, SDVX_IO_IN_GPIO_0_A, DS4_BUTTON_CROSS);
         state.wButtons |=
-            check_assign_key(gpio0, SDVX_IO_IN_GPIO_0_B, XUSB_GAMEPAD_B);
+            check_assign_key(gpio0, SDVX_IO_IN_GPIO_0_B, DS4_BUTTON_CIRCLE);
         state.wButtons |=
-            check_assign_key(gpio0, SDVX_IO_IN_GPIO_0_C, XUSB_GAMEPAD_X);
+            check_assign_key(gpio0, SDVX_IO_IN_GPIO_0_C, DS4_BUTTON_SQUARE);
         state.wButtons |=
-            check_assign_key(gpio1, SDVX_IO_IN_GPIO_1_D, XUSB_GAMEPAD_Y);
+            check_assign_key(gpio1, SDVX_IO_IN_GPIO_1_D, DS4_BUTTON_TRIANGLE);
         state.wButtons |= check_assign_key(
-            gpio1, SDVX_IO_IN_GPIO_1_FX_L, XUSB_GAMEPAD_LEFT_SHOULDER);
+            gpio1, SDVX_IO_IN_GPIO_1_FX_L, DS4_BUTTON_SHOULDER_LEFT);
         state.wButtons |= check_assign_key(
-            gpio1, SDVX_IO_IN_GPIO_1_FX_R, XUSB_GAMEPAD_RIGHT_SHOULDER);
+            gpio1, SDVX_IO_IN_GPIO_1_FX_R, DS4_BUTTON_SHOULDER_RIGHT);
 
-        vigem_target_x360_update(client, pad, state);
+        vigem_target_ds4_update(client, pad, state);
 
         if (config.enable_keylight) {
             gpio_keylight(gpio0, gpio1);
